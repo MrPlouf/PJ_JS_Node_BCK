@@ -10,7 +10,7 @@ Règles de constitution des groupes: Libre
 Objectifs  
 Sujet du projet: Création d'une API Restfull (pas de front à créer)  
 Type de rendu: Sources du projet (sans node_modules)  
-Date de rendu de projet: 27/12/2023 23H42  
+Date de rendu de projet: 22/12/2024 23H42  
 
 Le code doit être rendu sous Git (GitHub ou Gitlab, projet publique).  
 Chaque étudiant du groupe doit avoir travaillé sur le projet (avoir des commits à son nom), sinon 0.  
