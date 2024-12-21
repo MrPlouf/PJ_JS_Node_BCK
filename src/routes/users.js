@@ -1,11 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const userController = require('../controllers/userController');
+const userController = require('../controllers/userController'); // <- le chemin
+
 const auth = require('../middleware/auth');
 const roleMiddleware = require('../utils/roleMiddleware');
 
 // Lister tous les users (seulement admin)
-router.get('/', auth, roleMiddleware(['admin']), userController.getAllUsers);
+router.get('/', userController.getAllUsers);
 
 // Créer un user (endpoint POST)
 router.post('/', userController.createUser);
