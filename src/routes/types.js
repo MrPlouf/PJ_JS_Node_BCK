@@ -9,3 +9,5 @@ router.get('/', typeController.getAllTypes);
 
 // Admin Only CREATE
 router.post('/', auth, roleMiddleware(['admin']), typeController.createType);
+
+module.exports = router;
