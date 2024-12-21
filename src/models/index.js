@@ -1,32 +1,42 @@
+// models/index.js
 const { Sequelize } = require('sequelize');
-require('dotenv').config();
+const TypeModel = require('./type');
+const AttackModel = require('./attack');
+const ScriptmonModel = require('./scriptmon');
+// etc.
 
-const sequelize = new Sequelize(
-  process.env.DB_NAME,
-  process.env.DB_USER,
-  process.env.DB_PASS,
-  {
-    host: process.env.DB_HOST,
-    dialect: process.env.DB_DIALECT
-  }
-);
+const sequelize = new Sequelize(/* config depuis .env */);
 
-const db = {};
-db.sequelize = sequelize;
-db.User = require('./user')(sequelize);
-db.Type = require('./type')(sequelize);
-db.Attack = require('./attack')(sequelize);
-db.Scriptmon = require('./scriptmon')(sequelize);
-db.UserScriptmon = require('./userScriptmon')(sequelize);
+const Type = TypeModel(sequelize);
+const Attack = AttackModel(sequelize);
+const Scriptmon = ScriptmonModel(sequelize);
 
-// Relations
-db.Type.hasMany(db.Attack, { foreignKey: 'typeId' });
-db.Attack.belongsTo(db.Type, { foreignKey: 'typeId' });
+// ASSOCIATIONS
+// 1) Scriptmon -> Type (un scriptmon appartient à un type)
+Scriptmon.belongsTo(Type, {
+  foreignKey: 'typeId',
+  onDelete: 'SET NULL',
+  onUpdate: 'CASCADE',
+});
+Type.hasMany(Scriptmon, {
+  foreignKey: 'typeId',
+});
 
-db.Type.hasMany(db.Scriptmon, { foreignKey: 'typeId' });
-db.Scriptmon.belongsTo(db.Type, { foreignKey: 'typeId' });
+// 2) Scriptmon -> Attack (many-to-many)
+Scriptmon.belongsToMany(Attack, {
+  through: 'ScriptmonAttacks',  // table pivot
+  foreignKey: 'scriptmonId',
+});
+Attack.belongsToMany(Scriptmon, {
+  through: 'ScriptmonAttacks',
+  foreignKey: 'attackId',
+});
 
-db.User.belongsToMany(db.Scriptmon, { through: db.UserScriptmon, foreignKey: 'userId' });
-db.Scriptmon.belongsToMany(db.User, { through: db.UserScriptmon, foreignKey: 'scriptmonId' });
-
-module.exports = db;
+// Export
+module.exports = {
+  sequelize,
+  User,
+  Type,
+  Attack,
+  Scriptmon,
+};
